@@ -60,7 +60,7 @@ Le projet suit les 5 sprints du programme du cours.
 | 2. Maquette et modélisation | S3 – S5 | Backlog, wireframes, UML, MCD/MLD, validation par le client |
 | 3. Développement front-end | S6 – S9 | Interface fidèle à la maquette, données simulées |
 | 4. Développement back-end | S10 – S13 | API, base de données, intégration avec le front |
-| 5. Intégration et soutenance | S14 – S15 | Tests, documentation, présentation à l'entreprise et au professeur |
+| 5. Intégration et soutenance | S14 – S15 | Tests, documentation, présentation à l'entreprise et au jury |
 
 ## 4. Liens utiles
 
