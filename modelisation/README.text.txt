@@ -1,1 +1,0 @@
-Diagramme UML du projet a venir
