@@ -70,6 +70,10 @@ Le projet suit les 5 sprints du programme du cours.
 
 - **TikTok de l'agence** : [@adjoba.travel](https://www.tiktok.com/@adjoba.travel)
 - **Facebook de l'agence** : [Adjoba Travel](https://www.facebook.com/profile.php?id=61587405240082)
+  
+- **Maquette interactive (Figma)** : [Voir la maquette](https://www.figma.com/proto/XMyFf0RLzFs6Q0hkKwp6e8/Maquette-Adjoba-Travel?node-id=14-25472&p=f&t=aW7aGpEZv2uRhnEz-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=14%3A25472)
+
+> Maquette réalisée avec l'aide de l'IA (assistant IA de Figma) à partir du cahier des charges, puis vérifiée, reliée et testée. Pour la tester : sur l'écran de connexion, choisir un rôle (Directrice, Agent ou Comptable) ; chaque rôle a son propre tableau de bord et son propre menu. Dans la vraie application, le rôle sera reconnu grâce à l'identifiant et au mot de passe.
 
 
 ## 5. Auteur
