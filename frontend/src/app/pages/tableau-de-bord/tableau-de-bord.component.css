@@ -1,0 +1,43 @@
+.kpis,
+.trois-questions {
+  margin-bottom: 18px;
+}
+
+.lien-ligne {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  text-decoration: none;
+  min-width: 0;
+}
+
+.barres {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.barre-ligne {
+  display: grid;
+  grid-template-columns: 130px 1fr 28px;
+  align-items: center;
+  gap: 10px;
+}
+
+.libelle {
+  font-size: 13px;
+}
+
+.piste {
+  height: 10px;
+  background: var(--creme);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.rempli {
+  display: block;
+  height: 100%;
+  background: var(--or);
+  border-radius: 999px;
+}

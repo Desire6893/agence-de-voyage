@@ -1,0 +1,77 @@
+<div class="entete-page">
+  <div>
+    <h1>Clients</h1>
+    <p class="sous-titre">Retrouvez un client et l'ensemble de ses dossiers.</p>
+  </div>
+  @if (session.peutCreer) {
+    <a routerLink="/clients/nouveau" class="bouton principal">+ Nouveau client</a>
+  }
+</div>
+
+@if (message) {
+  <div class="message succes">{{ message }}</div>
+}
+
+<section class="carte">
+  <div class="grille grille-3 filtres">
+    <div class="champ">
+      <label for="recherche">Rechercher</label>
+      <input id="recherche" [(ngModel)]="recherche" (ngModelChange)="changerFiltre()" placeholder="Nom, téléphone ou n° de dossier" />
+    </div>
+    <div class="champ">
+      <label for="service">Service</label>
+      <select id="service" [(ngModel)]="service" (ngModelChange)="changerFiltre()">
+        <option value="">Tous les services</option>
+        @for (s of services; track s) {
+          <option [value]="s">{{ s }}</option>
+        }
+      </select>
+    </div>
+    <div class="champ">
+      <label for="statut">Statut</label>
+      <select id="statut" [(ngModel)]="statut" (ngModelChange)="changerFiltre()">
+        <option value="">Tous les statuts</option>
+        <option value="apayer">Doit encore payer</option>
+        <option value="solde">Soldé</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="tableau">
+    <table>
+      <thead>
+        <tr><th>Nom</th><th>Téléphone</th><th>Dossiers</th><th class="droite">Reste à payer</th><th></th></tr>
+      </thead>
+      <tbody>
+        @for (c of affiches; track c.id) {
+          <tr>
+            <td><strong>{{ c.civilite }} {{ c.nom }} {{ c.prenom }}</strong><br /><span class="petit-texte">{{ c.email }}</span></td>
+            <td>{{ c.telephone }}</td>
+            <td>{{ donnees.dossiersDuClient(c.id).length }}</td>
+            <td class="droite">
+              @if (donnees.resteClient(c.id) > 0) {
+                <span class="etiquette rouge">{{ fcfa(donnees.resteClient(c.id)) }}</span>
+              } @else {
+                <span class="etiquette vert">0 FCFA</span>
+              }
+            </td>
+            <td class="droite">
+              <a [routerLink]="['/dossiers']" [queryParams]="{ client: c.id }" class="bouton petit">Ouvrir</a>
+            </td>
+          </tr>
+        } @empty {
+          <tr><td colspan="5" class="vide">Aucun client ne correspond à la recherche.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="pagination">
+    <span class="petit-texte">{{ debut }}–{{ fin }} sur {{ filtres.length }} client(s)</span>
+    <div class="actions">
+      <button type="button" class="bouton petit" [disabled]="page <= 1" (click)="page = page - 1">Précédent</button>
+      <span class="fort">{{ page }} / {{ pages }}</span>
+      <button type="button" class="bouton petit" [disabled]="page >= pages" (click)="page = page + 1">Suivant</button>
+    </div>
+  </div>
+</section>

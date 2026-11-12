@@ -1,0 +1,157 @@
+.page {
+  min-height: 100vh;
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  background: url('/connexion.jpg') center / cover no-repeat;
+}
+
+.visuel {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 48px 56px;
+  color: var(--blanc);
+}
+
+.logo {
+  width: 330px;
+  max-width: 80%;
+  filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.5));
+}
+
+.slogan h1 {
+  font-size: 46px;
+  font-style: italic;
+  line-height: 1.15;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.45);
+}
+
+.slogan p {
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 16px;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.45);
+}
+
+.cote-carte {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+.carte-connexion {
+  width: 100%;
+  max-width: 440px;
+  background: rgba(255, 255, 255, 0.97);
+  border-radius: 24px;
+  padding: 40px 36px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.logo-petit {
+  display: none;
+  width: 180px;
+  margin: 0 auto 8px;
+}
+
+h2 {
+  font-size: 30px;
+  margin: 0;
+}
+
+.sous {
+  margin: -10px 0 6px;
+  color: #2f5a8a;
+}
+
+.saisie {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid var(--gris-clair);
+  border-radius: 12px;
+  padding: 0 12px;
+  color: var(--gris);
+  background: var(--blanc);
+}
+
+.saisie:focus-within {
+  outline: 2px solid var(--or);
+  border-color: var(--or);
+}
+
+.saisie input {
+  border: none;
+  padding: 13px 0;
+  outline: none;
+  color: var(--noir);
+}
+
+.oeil {
+  border: none;
+  background: none;
+  cursor: pointer;
+  color: var(--gris);
+  display: inline-flex;
+  padding: 4px;
+}
+
+.souvenir {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.large {
+  width: 100%;
+  padding: 14px;
+  font-size: 15px;
+}
+
+.oubli {
+  align-self: center;
+}
+
+.aide {
+  margin: -6px 0 0;
+  text-align: center;
+  font-size: 13px;
+  color: var(--gris);
+}
+
+.reserve {
+  background: var(--creme);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-size: 13px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.reserve span {
+  color: var(--gris);
+}
+
+@media (max-width: 900px) {
+  .page {
+    grid-template-columns: 1fr;
+  }
+  .visuel {
+    display: none;
+  }
+  .logo-petit {
+    display: block;
+  }
+  .cote-carte {
+    padding: 20px 16px;
+    min-height: 100vh;
+  }
+  .carte-connexion {
+    padding: 28px 22px;
+  }
+}

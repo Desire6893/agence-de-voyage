@@ -1,0 +1,40 @@
+<div class="entete-page">
+  <div>
+    <h1>Nouveau compte</h1>
+    <p class="sous-titre">Un compte = une personne de l'équipe et un seul rôle.</p>
+  </div>
+</div>
+
+<form #f="ngForm" class="carte" (ngSubmit)="enregistrer(f)">
+  <h2>Informations du compte</h2>
+  @if (erreur) { <div class="message danger">{{ erreur }}</div> }
+  <div class="formulaire">
+    <div class="champ">
+      <label for="nom">Nom *</label>
+      <input id="nom" name="nom" [(ngModel)]="nom" required #n="ngModel" />
+      @if (n.touched && n.invalid) { <span class="erreur">Le nom est obligatoire.</span> }
+    </div>
+    <div class="champ">
+      <label for="identifiant">Identifiant *</label>
+      <input id="identifiant" name="identifiant" [(ngModel)]="identifiant" required pattern="[a-zA-Z0-9._-]{3,}" #i="ngModel" placeholder="agent.3" />
+      @if (i.touched && i.invalid) { <span class="erreur">Au moins 3 caractères, sans espace.</span> }
+    </div>
+    <div class="champ">
+      <label for="mdp">Mot de passe *</label>
+      <input id="mdp" name="motDePasse" type="password" [(ngModel)]="motDePasse" required minlength="8" #m="ngModel" autocomplete="new-password" />
+      @if (m.touched && m.invalid) { <span class="erreur">Au moins 8 caractères.</span> }
+    </div>
+    <div class="champ">
+      <label>Rôle *</label>
+      <div class="choix">
+        @for (r of roles; track r) {
+          <button type="button" [class.actif]="role === r" (click)="role = r">{{ libelles[r] }}</button>
+        }
+      </div>
+    </div>
+  </div>
+  <div class="actions pied">
+    <button type="submit" class="bouton principal">Enregistrer le compte</button>
+    <a routerLink="/utilisateurs" class="bouton">Annuler</a>
+  </div>
+</form>

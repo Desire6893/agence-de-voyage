@@ -1,0 +1,116 @@
+.etapes {
+  margin-bottom: 18px;
+}
+
+.etapes ol {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.etapes button {
+  width: 100%;
+  border: 1.5px solid var(--gris-clair);
+  background: var(--blanc);
+  border-radius: 10px;
+  padding: 10px 8px;
+  font: inherit;
+  font-size: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.etapes button:disabled {
+  cursor: default;
+}
+
+.numero {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: var(--creme);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+}
+
+.faite button {
+  border-color: var(--vert);
+}
+
+.faite .numero {
+  background: var(--vert);
+  color: var(--blanc);
+}
+
+.courante button {
+  border-color: var(--or);
+  background: var(--or-clair);
+  font-weight: 600;
+}
+
+.courante .numero {
+  background: var(--or);
+}
+
+.haut {
+  margin-bottom: 18px;
+}
+
+.grille-2 {
+  margin-bottom: 18px;
+}
+
+.carte p {
+  margin: 0 0 6px;
+}
+
+.piste {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.rempli {
+  display: block;
+  height: 100%;
+  background: var(--noir);
+}
+
+.titre-carte {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 14px;
+}
+
+.titre-carte h2 {
+  margin: 0;
+}
+
+.case-piece {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.bouton-etiquette {
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+@media (max-width: 900px) {
+  .etapes ol {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}

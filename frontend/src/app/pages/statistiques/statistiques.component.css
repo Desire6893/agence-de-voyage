@@ -1,0 +1,72 @@
+.periode {
+  min-width: 220px;
+}
+
+.barre-ligne {
+  display: grid;
+  grid-template-columns: 140px 1fr 130px;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.piste {
+  height: 12px;
+  background: var(--creme);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.rempli {
+  display: block;
+  height: 100%;
+  background: var(--or);
+  border-radius: 999px;
+}
+
+.valeur-barre {
+  text-align: right;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.colonnes {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  height: 220px;
+}
+
+.colonne {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+}
+
+.barre-verticale {
+  width: 100%;
+  max-width: 48px;
+  min-height: 2px;
+  background: var(--or);
+  border-radius: 8px 8px 0 0;
+}
+
+.montant-colonne {
+  font-size: 10px;
+  text-align: center;
+  color: var(--gris);
+}
+
+.mois {
+  font-size: 12px;
+}
+
+@media (max-width: 760px) {
+  .barre-ligne {
+    grid-template-columns: 90px 1fr 100px;
+  }
+}

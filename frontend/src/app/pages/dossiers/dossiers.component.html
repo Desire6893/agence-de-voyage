@@ -1,0 +1,70 @@
+<div class="entete-page">
+  <div>
+    <h1>Dossiers</h1>
+    <p class="sous-titre">
+      @if (clientId) { Dossiers de {{ nomClientFiltre }} · <a routerLink="/dossiers">voir tous les dossiers</a> }
+      @else { Tous les dossiers de l'agence. }
+    </p>
+  </div>
+  @if (session.peutCreer) {
+    <a routerLink="/dossiers/nouveau" [queryParams]="clientId ? { client: clientId } : {}" class="bouton principal">+ Nouveau dossier</a>
+  }
+</div>
+
+<section class="carte">
+  <div class="grille grille-4 filtres">
+    <div class="champ">
+      <label for="r">Rechercher</label>
+      <input id="r" [(ngModel)]="recherche" placeholder="N° de dossier, client, destination" />
+    </div>
+    <div class="champ">
+      <label for="s">Service</label>
+      <select id="s" [(ngModel)]="service">
+        <option value="">Tous les services</option>
+        @for (s of services; track s) { <option [value]="s">{{ s }}</option> }
+      </select>
+    </div>
+    <div class="champ">
+      <label for="e">Étape</label>
+      <select id="e" [(ngModel)]="etape">
+        <option [ngValue]="0">Toutes les étapes</option>
+        @for (e of etapes; track e; let i = $index) { <option [ngValue]="i + 1">{{ i + 1 }}. {{ e }}</option> }
+      </select>
+    </div>
+    @if (session.role === 'agent') {
+      <label class="case">
+        <input type="checkbox" [(ngModel)]="mesDossiers" /> Seulement mes dossiers
+      </label>
+    }
+  </div>
+
+  <div class="tableau">
+    <table>
+      <thead>
+        <tr><th>N°</th><th>Client</th><th>Service · destination</th><th>Départ</th><th>Agent</th><th>Étape</th><th class="droite">Reste à payer</th><th></th></tr>
+      </thead>
+      <tbody>
+        @for (x of filtres; track x.id) {
+          <tr>
+            <td class="fort">{{ x.numero }}</td>
+            <td>{{ donnees.nomClient(x.clientId) }}</td>
+            <td>{{ x.service }} · {{ x.pays }}, {{ x.ville }}</td>
+            <td>{{ dateFr(x.dateVoyage) }}</td>
+            <td>{{ donnees.nomUtilisateur(x.agentId) }}</td>
+            <td><span class="etiquette gris">{{ x.etape }}. {{ etapes[x.etape - 1] }}</span></td>
+            <td class="droite">
+              @if (donnees.resteAPayer(x.id) > 0) {
+                <span class="etiquette rouge">{{ fcfa(donnees.resteAPayer(x.id)) }}</span>
+              } @else {
+                <span class="etiquette vert">Soldé</span>
+              }
+            </td>
+            <td class="droite"><a [routerLink]="['/dossiers', x.id]" class="bouton petit">Ouvrir</a></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="8" class="vide">Aucun dossier.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

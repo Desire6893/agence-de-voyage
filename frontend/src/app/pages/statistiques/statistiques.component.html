@@ -1,0 +1,57 @@
+<div class="entete-page">
+  <div>
+    <h1>Statistiques</h1>
+    <p class="sous-titre">Le suivi de l'activité de l'agence.</p>
+  </div>
+  <div class="champ periode">
+    <label for="periode">Période</label>
+    <select id="periode" [(ngModel)]="periode">
+      @for (p of periodes; track p.valeur) { <option [value]="p.valeur">{{ p.libelle }}</option> }
+    </select>
+  </div>
+</div>
+
+<div class="grille grille-4 bloc">
+  <div class="carte kpi or"><span class="petit-texte">Encaissements</span><span class="valeur">{{ fcfa(encaisse) }}</span></div>
+  <div class="carte kpi"><span class="petit-texte">Dossiers ouverts</span><span class="valeur">{{ nbDossiers }}</span></div>
+  <div class="carte kpi"><span class="petit-texte">Montant des dossiers ouverts</span><span class="valeur">{{ fcfa(chiffreAffaires) }}</span></div>
+  <div class="carte kpi"><span class="petit-texte">Restes à encaisser (tous dossiers)</span><span class="valeur">{{ fcfa(restes) }}</span></div>
+</div>
+
+<div class="grille grille-2 bloc">
+  <section class="carte">
+    <h2>Dossiers par service</h2>
+    @for (b of parService; track b.libelle) {
+      <div class="barre-ligne"><span>{{ b.libelle }}</span><span class="piste"><span class="rempli" [style.width.%]="b.part"></span></span><span class="valeur-barre">{{ b.texte }}</span></div>
+    }
+  </section>
+  <section class="carte">
+    <h2>Dossiers par destination</h2>
+    @for (b of parDestination; track b.libelle) {
+      <div class="barre-ligne"><span>{{ b.libelle }}</span><span class="piste"><span class="rempli" [style.width.%]="b.part"></span></span><span class="valeur-barre">{{ b.texte }}</span></div>
+    } @empty {
+      <p class="vide">Aucun dossier sur la période.</p>
+    }
+  </section>
+</div>
+
+<div class="grille grille-2">
+  <section class="carte">
+    <h2>Encaissements par service</h2>
+    @for (b of encaissementsParService; track b.libelle) {
+      <div class="barre-ligne"><span>{{ b.libelle }}</span><span class="piste"><span class="rempli" [style.width.%]="b.part"></span></span><span class="valeur-barre">{{ b.texte }}</span></div>
+    }
+  </section>
+  <section class="carte">
+    <h2>Paiements par mois</h2>
+    <div class="colonnes">
+      @for (b of paiementsParMois; track b.libelle) {
+        <div class="colonne">
+          <span class="montant-colonne">{{ b.valeur ? b.texte : '' }}</span>
+          <span class="barre-verticale" [style.height.%]="b.part"></span>
+          <span class="mois">{{ b.libelle }}</span>
+        </div>
+      }
+    </div>
+  </section>
+</div>

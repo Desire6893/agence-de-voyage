@@ -1,0 +1,62 @@
+<div class="entete-page">
+  <div>
+    <h1>{{ session.role === 'agent' ? 'Acomptes' : 'Paiements' }}</h1>
+    <p class="sous-titre">Tous les versements enregistrés et leurs reçus.</p>
+  </div>
+  <a routerLink="/paiements/nouveau" class="bouton principal">
+    + {{ session.role === 'agent' ? 'Enregistrer un acompte' : 'Enregistrer un paiement' }}
+  </a>
+</div>
+
+<section class="carte">
+  <div class="grille grille-3 filtres">
+    <div class="champ">
+      <label for="r">Rechercher</label>
+      <input id="r" [(ngModel)]="recherche" placeholder="N° de reçu, n° de dossier, client" />
+    </div>
+    <div class="champ">
+      <label for="m">Moyen</label>
+      <select id="m" [(ngModel)]="moyen">
+        <option value="">Tous les moyens</option>
+        @for (m of moyens; track m) { <option [value]="m">{{ m }}</option> }
+      </select>
+    </div>
+    <div class="champ">
+      <label for="t">Type</label>
+      <select id="t" [(ngModel)]="type">
+        <option value="">Tous les types</option>
+        <option value="Acompte">Acompte</option>
+        <option value="Versement">Versement</option>
+        <option value="Solde">Solde</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="tableau">
+    <table>
+      <thead>
+        <tr><th>Reçu n°</th><th>Date</th><th>Dossier · client</th><th>Type</th><th>Moyen</th><th>Enregistré par</th><th class="droite">Montant</th><th></th></tr>
+      </thead>
+      <tbody>
+        @for (p of filtres; track p.id) {
+          <tr>
+            <td class="fort">{{ p.numeroRecu }}</td>
+            <td>{{ dateFr(p.date) }}</td>
+            <td><a [routerLink]="['/dossiers', p.dossierId]">{{ libelle(p.dossierId) }}</a></td>
+            <td>{{ p.type }}</td>
+            <td>{{ p.moyen }}</td>
+            <td>{{ donnees.nomUtilisateur(p.utilisateurId) }}</td>
+            <td class="droite fort">{{ fcfa(p.montant) }}</td>
+            <td class="droite"><a [routerLink]="['/recus', p.id]" class="bouton petit">Reçu</a></td>
+          </tr>
+        } @empty {
+          <tr><td colspan="8" class="vide">Aucun paiement.</td></tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <div class="pagination">
+    <span class="petit-texte">{{ filtres.length }} paiement(s)</span>
+    <span class="fort">Total : {{ fcfa(total) }}</span>
+  </div>
+</section>

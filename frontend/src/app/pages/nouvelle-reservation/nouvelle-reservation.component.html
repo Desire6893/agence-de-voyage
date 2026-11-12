@@ -1,0 +1,53 @@
+@if (dossier; as x) {
+  <div class="entete-page">
+    <div>
+      <h1>Ajouter une réservation</h1>
+      <p class="sous-titre">Dossier n° {{ x.numero }} – {{ x.service }} {{ x.pays }} · {{ donnees.nomClient(x.clientId) }}</p>
+    </div>
+  </div>
+
+    <form #f="ngForm" class="carte" (ngSubmit)="enregistrer(f)">
+      <h2>Détails de la réservation</h2>
+      <div class="formulaire">
+        <div class="champ plein">
+          <label>Type de service</label>
+          <div class="choix">
+            @for (t of types; track t) {
+              <button type="button" [class.actif]="type === t" (click)="type = t">{{ t }}</button>
+            }
+          </div>
+        </div>
+        <div class="champ plein">
+          <label for="fournisseur">Fournisseur ou plateforme *</label>
+          <input id="fournisseur" name="fournisseur" [(ngModel)]="fournisseur" required #fo="ngModel" placeholder="Air France, Booking, Hôtel…" />
+          @if (fo.touched && fo.invalid) { <span class="erreur">Le fournisseur est obligatoire.</span> }
+        </div>
+        <div class="champ">
+          <label for="debut">Date de début *</label>
+          <input id="debut" name="dateDebut" type="date" [(ngModel)]="dateDebut" required />
+        </div>
+        <div class="champ">
+          <label for="fin">Date de fin</label>
+          <input id="fin" name="dateFin" type="date" [(ngModel)]="dateFin" />
+          @if (datesIncoherentes) { <span class="erreur">La date de fin est avant la date de début.</span> }
+        </div>
+        <div class="champ">
+          <label for="montant">Montant (FCFA) *</label>
+          <input id="montant" name="montant" type="number" min="0" step="1000" [(ngModel)]="montant" required #mo="ngModel" />
+          @if (mo.touched && mo.invalid) { <span class="erreur">Le montant est obligatoire.</span> }
+        </div>
+        <div class="champ">
+          <label for="etat">État</label>
+          <select id="etat" name="etat" [(ngModel)]="etat">
+            @for (e of etats; track e) { <option [value]="e">{{ e }}</option> }
+          </select>
+        </div>
+      </div>
+      <div class="actions pied">
+        <button type="submit" class="bouton principal">Enregistrer la réservation</button>
+        <a [routerLink]="['/dossiers', x.id]" class="bouton">Annuler</a>
+      </div>
+    </form>
+} @else {
+  <div class="carte"><h2>Dossier introuvable</h2><a routerLink="/dossiers" class="bouton">Retour</a></div>
+}

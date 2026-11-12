@@ -1,0 +1,87 @@
+<div class="entete-page">
+  <div>
+    <h1>Nouveau dossier</h1>
+    <p class="sous-titre">Le numéro de dossier est créé automatiquement.</p>
+  </div>
+</div>
+
+@if (message) {
+  <div class="message succes">{{ message }}</div>
+}
+
+<form #f="ngForm" class="pile" (ngSubmit)="creer(f)">
+  <section class="carte">
+    <h2>Client et prestation</h2>
+    <div class="formulaire">
+      <div class="champ plein">
+        <label for="client">Client *</label>
+        <select id="client" name="client" [(ngModel)]="clientId" required #cl="ngModel">
+          <option [ngValue]="0" disabled>Choisir un client</option>
+          @for (c of clients; track c.id) {
+            <option [ngValue]="c.id">{{ c.nom }} {{ c.prenom }} · {{ c.telephone }}</option>
+          }
+        </select>
+        @if (cl.touched && !clientId) { <span class="erreur">Choisissez un client.</span> }
+        <a routerLink="/clients/nouveau" class="petit-texte">Le client n'existe pas encore ? Créer le client</a>
+      </div>
+
+      <div class="champ plein">
+        <label>Service *</label>
+        <div class="choix">
+          @for (s of services; track s) {
+            <button type="button" [class.actif]="service === s" (click)="service = s">{{ s }}</button>
+          }
+        </div>
+      </div>
+
+      <div class="champ">
+        <label for="pays">Pays de destination *</label>
+        <select id="pays" name="pays" [(ngModel)]="pays" required>
+          @for (p of listePays; track p) { <option [value]="p">{{ p }}</option> }
+        </select>
+      </div>
+
+      <div class="champ">
+        <label for="ville">Ville *</label>
+        <input id="ville" name="ville" [(ngModel)]="ville" required #vi="ngModel" placeholder="Montréal" />
+        @if (vi.touched && vi.invalid) { <span class="erreur">La ville est obligatoire.</span> }
+      </div>
+
+      <div class="champ">
+        <label for="date">Date du voyage *</label>
+        <input id="date" name="dateVoyage" type="date" [min]="minDate" [(ngModel)]="dateVoyage" required #dv="ngModel" />
+        @if (dv.touched && dv.invalid) { <span class="erreur">La date du voyage est obligatoire.</span> }
+      </div>
+    </div>
+  </section>
+
+  <section class="carte">
+    <h2>Montant et suivi</h2>
+    <div class="formulaire">
+      <div class="champ">
+        <label for="montant">Montant total (FCFA) *</label>
+        <input id="montant" name="montantTotal" type="number" min="1" step="1000" [(ngModel)]="montantTotal" required #mt="ngModel" />
+        @if (mt.touched && (!montantTotal || montantTotal <= 0)) { <span class="erreur">Saisissez un montant supérieur à 0.</span> }
+      </div>
+      <div class="champ">
+        <label for="agent">Agent responsable *</label>
+        <select id="agent" name="agent" [(ngModel)]="agentId" required>
+          @for (a of donnees.agents(); track a.id) { <option [ngValue]="a.id">{{ a.nom }}</option> }
+        </select>
+      </div>
+    </div>
+  </section>
+
+  <section class="carte">
+    <h2>Pièces à fournir</h2>
+    <div class="choix">
+      @for (p of piecesPrevues; track p) { <span class="etiquette gris">{{ p }}</span> }
+      @empty { <span class="vide">Aucune pièce prévue pour ce service.</span> }
+    </div>
+  </section>
+
+  <div class="actions">
+    <button type="submit" class="bouton principal">Créer le dossier</button>
+    <a routerLink="/dossiers" class="bouton">Annuler</a>
+  </div>
+</form>

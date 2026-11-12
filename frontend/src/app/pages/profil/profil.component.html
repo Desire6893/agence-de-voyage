@@ -1,0 +1,42 @@
+<div class="entete-page">
+  <div>
+    <h1>Profil</h1>
+    <p class="sous-titre">{{ session.utilisateur?.nom }} · {{ session.libelleRole }}</p>
+  </div>
+  <button type="button" class="bouton" (click)="deconnecter()">Se déconnecter</button>
+</div>
+
+<div class="grille grille-2">
+  <section class="carte">
+    <h2>Mes informations</h2>
+    <ul class="liste-simple">
+      <li><span>Nom</span><strong>{{ session.utilisateur?.nom }}</strong></li>
+      <li><span>Identifiant</span><strong>{{ session.utilisateur?.identifiant }}</strong></li>
+      <li><span>Rôle</span><span class="etiquette or">{{ session.libelleRole }}</span></li>
+    </ul>
+  </section>
+
+  <form #f="ngForm" class="carte" (ngSubmit)="changer(f)">
+    <h2>Changer mon mot de passe</h2>
+    @if (message) { <div class="message succes">{{ message }}</div> }
+    @if (erreur) { <div class="message danger">{{ erreur }}</div> }
+    <div class="pile">
+      <div class="champ">
+        <label for="actuel">Mot de passe actuel</label>
+        <input id="actuel" name="actuel" type="password" [(ngModel)]="actuel" required autocomplete="current-password" />
+      </div>
+      <div class="champ">
+        <label for="nouveau">Nouveau mot de passe</label>
+        <input id="nouveau" name="nouveau" type="password" [(ngModel)]="nouveau" required minlength="8" #n="ngModel" autocomplete="new-password" />
+        @if (n.touched && n.invalid) { <span class="erreur">Au moins 8 caractères.</span> }
+      </div>
+      <div class="champ">
+        <label for="confirmation">Confirmer le nouveau mot de passe</label>
+        <input id="confirmation" name="confirmation" type="password" [(ngModel)]="confirmation" required autocomplete="new-password" />
+      </div>
+    </div>
+    <div class="actions pied">
+      <button type="submit" class="bouton principal">Enregistrer</button>
+    </div>
+  </form>
+</div>

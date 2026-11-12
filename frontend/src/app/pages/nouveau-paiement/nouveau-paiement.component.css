@@ -1,0 +1,38 @@
+.mise-en-page {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.avertissement {
+  margin: 18px 0 0;
+}
+
+.confirmation {
+  margin-top: 18px;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--or-clair);
+}
+
+.confirmation p {
+  margin: 0 0 12px;
+}
+
+.apres {
+  font-size: 15px;
+}
+
+.info {
+  margin-top: 14px;
+}
+
+@media (max-width: 900px) {
+  .mise-en-page {
+    grid-template-columns: 1fr;
+  }
+  .situation {
+    order: -1;
+  }
+}

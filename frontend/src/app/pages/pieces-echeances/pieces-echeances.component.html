@@ -1,0 +1,148 @@
+<div class="entete-page">
+  <div>
+    <h1>Pièces et échéances</h1>
+    <p class="sous-titre">Les papiers à récupérer, les dates limites et les relances.</p>
+  </div>
+  <label class="case">
+    <input type="checkbox" [(ngModel)]="voirTraitees" /> Afficher aussi les éléments effectués
+  </label>
+</div>
+
+@if (alertes.length) {
+  <div class="pile alertes">
+    @for (e of alertes; track e.id) {
+      <div class="message alerte">
+        ⚠ {{ e.type }} · {{ dossierLibelle(e.dossierId) }} · {{ dateFr(e.date) }} ({{ etat(e).libelle }}) — {{ e.action }}
+      </div>
+    }
+  </div>
+}
+
+<div class="grille grille-2 bloc">
+  <section class="carte">
+    <h2>Pièces manquantes · tous les dossiers</h2>
+    <div class="tableau">
+      <table>
+        <thead><tr><th>Dossier</th><th>Service</th><th>Pièce</th><th class="droite">Reçue</th></tr></thead>
+        <tbody>
+          @for (p of piecesManquantes; track p.id) {
+            <tr>
+              <td><a [routerLink]="['/dossiers', p.dossierId]">{{ dossierLibelle(p.dossierId) }}</a></td>
+              <td>{{ serviceDossier(p.dossierId) }}</td>
+              <td><span class="etiquette rouge">{{ p.nom }}</span></td>
+              <td class="droite"><input type="checkbox" (change)="marquerRecue(p.id)" [attr.aria-label]="'Marquer ' + p.nom + ' comme reçue'" /></td>
+            </tr>
+          } @empty {
+            <tr><td colspan="4" class="vide">Toutes les pièces sont reçues.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <section class="carte">
+    <h2>Dates limites</h2>
+    <div class="tableau">
+      <table>
+        <thead><tr><th>Dossier</th><th>Échéance</th><th>Date</th><th>Alerte</th><th></th></tr></thead>
+        <tbody>
+          @for (e of datesLimites; track e.id) {
+            <tr>
+              <td><a [routerLink]="['/dossiers', e.dossierId]">{{ dossierLibelle(e.dossierId) }}</a></td>
+              <td>{{ e.type }}</td>
+              <td>{{ dateFr(e.date) }}</td>
+              <td><span class="etiquette {{ etat(e).classe }}">{{ etat(e).libelle }}</span></td>
+              <td class="droite">
+                <button type="button" class="bouton petit" (click)="basculer(e.id)">{{ e.traitee ? 'Rouvrir' : 'Fait' }}</button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="5" class="vide">Aucune date limite à venir.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
+
+<div class="grille grille-2 bloc">
+  <section class="carte">
+    <h2>Relances à faire</h2>
+    <div class="tableau">
+      <table>
+        <thead><tr><th>Date</th><th>Dossier</th><th>Action</th><th>Responsable</th><th>État</th><th></th></tr></thead>
+        <tbody>
+          @for (e of relances; track e.id) {
+            <tr>
+              <td>{{ dateFr(e.date) }}</td>
+              <td><a [routerLink]="['/dossiers', e.dossierId]">{{ donnees.dossier(e.dossierId)?.numero }}</a></td>
+              <td>{{ e.action }}</td>
+              <td>{{ donnees.nomUtilisateur(e.responsableId) }}</td>
+              <td><span class="etiquette {{ etat(e).classe }}">{{ etat(e).libelle }}</span></td>
+              <td class="droite">
+                <button type="button" class="bouton petit" (click)="basculer(e.id)">{{ e.traitee ? 'Rouvrir' : 'Effectuée' }}</button>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="6" class="vide">Aucune relance à faire.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <form #f="ngForm" class="carte" (ngSubmit)="ajouterRelance(f)">
+    <h2>Nouvelle relance</h2>
+    @if (messageRelance) { <div class="message succes">{{ messageRelance }}</div> }
+    <div class="formulaire">
+      <div class="champ plein">
+        <label for="dossier">Dossier *</label>
+        <select id="dossier" name="dossierId" [(ngModel)]="nouvelle.dossierId" required>
+          <option [ngValue]="0" disabled>Choisir un dossier</option>
+          @for (x of donnees.d.dossiers; track x.id) {
+            <option [ngValue]="x.id">{{ x.numero }} · {{ donnees.nomClient(x.clientId) }}</option>
+          }
+        </select>
+      </div>
+      <div class="champ">
+        <label for="dateRelance">Date *</label>
+        <input id="dateRelance" name="date" type="date" [(ngModel)]="nouvelle.date" required />
+      </div>
+      <div class="champ">
+        <label for="responsable">Responsable</label>
+        <select id="responsable" name="responsableId" [(ngModel)]="nouvelle.responsableId">
+          @for (u of responsables; track u.id) { <option [ngValue]="u.id">{{ u.nom }}</option> }
+        </select>
+      </div>
+      <div class="champ plein">
+        <label for="action">Action *</label>
+        <input id="action" name="action" [(ngModel)]="nouvelle.action" required placeholder="Demander le passeport" />
+      </div>
+    </div>
+    <div class="actions pied">
+      <button type="submit" class="bouton principal">Ajouter la relance</button>
+    </div>
+  </form>
+</div>
+
+<section class="carte">
+  <h2>Pièces selon le service et le pays</h2>
+  <div class="tableau">
+    <table>
+      <thead><tr><th>Service</th><th>Pays</th><th>Pièces à fournir</th></tr></thead>
+      <tbody>
+        @for (g of modelesParService; track g.service + g.pays) {
+          <tr>
+            <td class="fort">{{ g.service }}</td>
+            <td>{{ g.pays }}</td>
+            <td>
+              <div class="choix">
+                @for (p of g.pieces; track p) { <span class="etiquette gris">{{ p }}</span> }
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

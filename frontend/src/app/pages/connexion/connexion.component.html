@@ -1,0 +1,59 @@
+<div class="page">
+  <section class="visuel">
+    <img src="logo.png" alt="Adjoba Travel – Agence de voyage et de tourisme" class="logo" />
+    <div class="slogan">
+      <h1>Explorez le monde<br />avec nous</h1>
+      <p>Billets d'avion · Séjours · Visas · Assistance voyage</p>
+    </div>
+  </section>
+
+  <section class="cote-carte">
+    <form class="carte-connexion" (ngSubmit)="connecter()">
+      <img src="logo.png" alt="Adjoba Travel" class="logo-petit" />
+      <h2>Connexion</h2>
+      <p class="sous">Accédez à votre espace de travail</p>
+
+      @if (erreur) {
+        <div class="message danger">{{ erreur }}</div>
+      }
+
+      <div class="champ">
+        <label for="identifiant">Identifiant</label>
+        <div class="saisie">
+          <app-icone nom="personne" />
+          <input id="identifiant" name="identifiant" [(ngModel)]="identifiant" autocomplete="username" placeholder="Votre identifiant" />
+        </div>
+      </div>
+
+      <div class="champ">
+        <label for="motDePasse">Mot de passe</label>
+        <div class="saisie">
+          <app-icone nom="cadenas" />
+          <input id="motDePasse" name="motDePasse" [type]="voirMotDePasse ? 'text' : 'password'" [(ngModel)]="motDePasse"
+            autocomplete="current-password" placeholder="Votre mot de passe" />
+          <button type="button" class="oeil" (click)="voirMotDePasse = !voirMotDePasse"
+            [attr.aria-label]="voirMotDePasse ? 'Masquer le mot de passe' : 'Afficher le mot de passe'">
+            <app-icone nom="oeil" />
+          </button>
+        </div>
+      </div>
+
+      <label class="souvenir">
+        <input type="checkbox" name="seSouvenir" [(ngModel)]="seSouvenir" />
+        Se souvenir de moi
+      </label>
+
+      <button type="submit" class="bouton principal large">Se connecter</button>
+
+      <button type="button" class="bouton lien oubli" (click)="aideOubli = !aideOubli">Mot de passe oublié ?</button>
+      @if (aideOubli) {
+        <p class="aide">Contactez la directrice : elle réinitialise votre mot de passe.</p>
+      }
+
+      <div class="reserve">
+        <strong>Accès réservé à l'équipe</strong>
+        <span>Les comptes sont créés par la directrice.</span>
+      </div>
+    </form>
+  </section>
+</div>

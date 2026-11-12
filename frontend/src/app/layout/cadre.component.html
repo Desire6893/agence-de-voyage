@@ -1,0 +1,59 @@
+<div class="application">
+  <aside class="menu ne-pas-imprimer">
+    <a routerLink="/tableau-de-bord" class="logo"><img src="logo.png" alt="Adjoba Travel" /></a>
+    <p class="espace">Espace interne · {{ session.libelleRole }}</p>
+    <nav>
+      @for (lien of menu; track lien.lien) {
+        <a [routerLink]="lien.lien" routerLinkActive="actif" class="lien">
+          <app-icone [nom]="lien.icone" />
+          <span>{{ lien.libelle }}</span>
+        </a>
+      }
+    </nav>
+    <div class="bas-menu">
+      <a routerLink="/profil" class="carte-utilisateur">
+        <span class="avatar">{{ initiales }}</span>
+        <span>
+          <strong>{{ session.utilisateur?.nom }}</strong>
+          <small>{{ session.libelleRole }} · compte interne</small>
+        </span>
+      </a>
+      <button type="button" class="lien sortie" (click)="deconnecter()">
+        <app-icone nom="sortie" />
+        <span>Se déconnecter</span>
+      </button>
+    </div>
+  </aside>
+
+  <div class="principal">
+    <header class="barre ne-pas-imprimer">
+      <a routerLink="/tableau-de-bord" class="logo-mobile"><img src="logo.png" alt="Adjoba Travel" /></a>
+      <div class="fil"><strong>ADJOBA TRAVEL</strong> / {{ titre }}</div>
+      <div class="droite-barre">
+        <span class="date">{{ date }}</span>
+        @if (session.role !== 'comptable') {
+          <a routerLink="/pieces-echeances" class="cloche" title="Alertes">
+            <app-icone nom="cloche" />
+            @if (nbAlertes > 0) {
+              <span class="pastille">{{ nbAlertes }}</span>
+            }
+          </a>
+        }
+        <span class="etiquette or">{{ session.libelleRole }}</span>
+      </div>
+    </header>
+
+    <main class="contenu">
+      <router-outlet />
+    </main>
+  </div>
+
+  <nav class="barre-bas ne-pas-imprimer">
+    @for (lien of menuMobile; track lien.lien) {
+      <a [routerLink]="lien.lien" routerLinkActive="actif">
+        <app-icone [nom]="lien.icone" [taille]="20" />
+        <span>{{ lien.court }}</span>
+      </a>
+    }
+  </nav>
+</div>

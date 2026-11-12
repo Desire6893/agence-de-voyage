@@ -1,0 +1,63 @@
+@if (decharge; as dc) {
+  <div class="actions ne-pas-imprimer barre-doc">
+    <button type="button" class="bouton principal" (click)="imprimer()">Imprimer (2 exemplaires)</button>
+    <a [routerLink]="['/recus', id]" class="bouton">Voir le reçu</a>
+    @if (dossier; as x) {
+      <a [routerLink]="['/dossiers', x.id]" class="bouton">Retour au dossier</a>
+    }
+  </div>
+
+  @for (copie of copies; track copie) {
+    <article class="document" [class.seulement-impression]="copie === 2">
+      <img src="logo.png" alt="Adjoba Travel" class="logo-doc" />
+      <h1>Décharge de visa</h1>
+      <p class="petit-texte">
+        Dossier {{ dossier?.numero }} · Reçu {{ paiement?.numeroRecu }} · Fait à {{ dc.lieu }}, le {{ dateFr(dc.dateSignature) }} ·
+        Versement en espèces · Exemplaire {{ copie }} / {{ dc.nombreExemplaires }}
+      </p>
+
+      <div class="ligne"><span>Payeur :</span><strong>{{ dc.nomPayeur }}</strong></div>
+      <div class="ligne"><span>Pièce d'identité :</span><strong>{{ dc.pieceIdentite }}</strong></div>
+      <div class="ligne"><span>Candidat / demandeur :</span><strong>{{ dc.nomCandidat }}</strong></div>
+      <div class="ligne"><span>Destination du visa :</span><strong>{{ dc.destinationVisa }}</strong></div>
+      <div class="ligne"><span>Versement reçu :</span><strong>{{ fcfa(dc.montantVerse) }} ({{ montantEnLettres(dc.montantVerse) }})</strong></div>
+
+      <div class="texte-decharge">
+        <p>
+          Je soussigné(e), {{ dc.nomPayeur }}, titulaire de la pièce d'identité indiquée ci-dessus, reconnais avoir versé en
+          espèces à ADJOBA TRAVEL la somme de {{ fcfa(dc.montantVerse) }}, à titre de {{ paiement?.type?.toLowerCase() }} pour
+          l'accompagnement de la demande de visa du candidat {{ dc.nomCandidat }} à destination de : {{ dc.destinationVisa }}.
+        </p>
+        <p>
+          Je reconnais que l'obtention du visa dépend uniquement des autorités consulaires compétentes. ADJOBA TRAVEL ne garantit
+          ni la délivrance du visa, ni le délai de décision.
+        </p>
+        <div class="encadre">
+          <strong>Frais d'accompagnement non remboursables.</strong> Ils ne sont pas remboursables, y compris en cas de refus de visa
+          ou d'annulation de la demande par le demandeur.
+        </div>
+        <p>
+          Le montant total du dossier est de {{ fcfa(dossier?.montantTotal ?? 0) }} ; le reste à payer après ce versement est de
+          {{ fcfa(resteApres) }}.
+        </p>
+        <p class="fort">
+          La présente décharge est établie en deux exemplaires signés : un pour l'agence et un pour le demandeur.
+        </p>
+      </div>
+
+      <div class="signatures">
+        <div>La directrice · signature et cachet</div>
+        <div>{{ dc.nomCandidat }} · lu et approuvé</div>
+      </div>
+
+      <div [innerHTML]="vagues"></div>
+      <svg class="avion" viewBox="0 0 24 24" fill="currentColor"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z" /></svg>
+    </article>
+  }
+} @else {
+  <div class="carte">
+    <h2>Aucune décharge pour ce paiement</h2>
+    <p class="petit-texte">Une décharge est créée pour un versement en espèces sur un dossier de visa.</p>
+    <a [routerLink]="['/recus', id]" class="bouton">Voir le reçu</a>
+  </div>
+}

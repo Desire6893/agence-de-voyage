@@ -1,0 +1,49 @@
+@if (paiement; as p) {
+  @if (message) {
+    <div class="message succes ne-pas-imprimer">{{ message }}</div>
+  }
+
+  <div class="actions ne-pas-imprimer barre-doc">
+    <button type="button" class="bouton principal" (click)="imprimer()">Imprimer (2 exemplaires)</button>
+    @if (aDecharge) {
+      <a [routerLink]="['/recus', p.id, 'decharge']" class="bouton">Voir la décharge</a>
+    }
+    <a [routerLink]="['/dossiers', p.dossierId]" class="bouton">Retour au dossier</a>
+  </div>
+
+  @for (copie of copies; track copie) {
+    <article class="document" [class.seulement-impression]="copie === 2">
+      <img src="logo.png" alt="Adjoba Travel" class="logo-doc" />
+      <h1>Reçu de paiement</h1>
+      <p class="petit-texte">N° {{ p.numeroRecu }} · Émis à Abidjan, le {{ dateFr(p.date) }} · Exemplaire {{ copie }} / 2</p>
+
+      @if (dossier; as x) {
+        <div class="ligne"><span>Client :</span><strong>{{ client?.civilite }} {{ donnees.nomClient(x.clientId) }}</strong></div>
+        <div class="ligne"><span>Dossier :</span><strong>{{ x.numero }} – {{ x.service }} {{ x.pays }} · {{ x.ville }}</strong></div>
+        <div class="ligne"><span>Type de paiement :</span><strong>{{ p.type }}</strong></div>
+        <div class="ligne"><span>Moyen de paiement :</span><strong>{{ p.moyen }}</strong></div>
+        <div class="ligne"><span>Date de paiement :</span><strong>{{ dateFr(p.date) }}</strong></div>
+
+        <div class="montant-recu">
+          <small>MONTANT REÇU</small>
+          <div>{{ fcfa(p.montant) }}</div>
+          <em>{{ montantEnLettres(p.montant) }}</em>
+        </div>
+
+        <p class="pied-recu">
+          Total du dossier : {{ fcfa(x.montantTotal) }} · Reste à payer : {{ fcfa(resteApres) }}<br />
+          Enregistré par : {{ donnees.nomUtilisateur(p.utilisateurId) }} · {{ dateFr(p.dateHeureSaisie) }} à {{ heureFr(p.dateHeureSaisie) }}
+        </p>
+      }
+
+      <p class="merci">Merci pour votre confiance !</p>
+      <div class="signatures"><div></div><div>Signature et cachet de l'agence</div></div>
+      <p class="adresse"><strong>ADJOBA TRAVEL</strong><br />Agence de voyage et de tourisme<br />Abidjan – Côte d'Ivoire</p>
+
+      <div [innerHTML]="vagues"></div>
+      <svg class="avion" viewBox="0 0 24 24" fill="currentColor"><path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z" /></svg>
+    </article>
+  }
+} @else {
+  <div class="carte"><h2>Reçu introuvable</h2><a routerLink="/paiements" class="bouton">Retour aux paiements</a></div>
+}

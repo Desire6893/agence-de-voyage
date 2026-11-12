@@ -1,0 +1,187 @@
+<div class="entete-page">
+  <div>
+    <h1>{{ bonjour }}</h1>
+    <p class="sous-titre">
+      @switch (session.role) {
+        @case ('directrice') { La vue d'ensemble de l'agence. }
+        @case ('agent') { Les dossiers à suivre et les actions du jour. }
+        @case ('comptable') { Les paiements, les reçus et les restes à encaisser. }
+      }
+    </p>
+  </div>
+  <div class="actions">
+    @if (session.peutCreer) {
+      <a routerLink="/dossiers/nouveau" class="bouton">+ Nouveau dossier</a>
+    }
+    <a routerLink="/paiements/nouveau" class="bouton principal">
+      {{ session.role === 'agent' ? 'Enregistrer un acompte' : 'Enregistrer un paiement' }}
+    </a>
+  </div>
+</div>
+
+<div class="grille grille-4 kpis">
+  <div class="carte kpi or">
+    <span class="petit-texte">Restes à encaisser</span>
+    <span class="valeur">{{ fcfa(restesAEncaisser) }}</span>
+  </div>
+  <div class="carte kpi">
+    <span class="petit-texte">Encaissements du mois</span>
+    <span class="valeur">{{ fcfa(encaissementsDuMois) }}</span>
+  </div>
+  @if (session.role === 'agent') {
+    <div class="carte kpi">
+      <span class="petit-texte">Mes dossiers suivis</span>
+      <span class="valeur">{{ mesDossiers.length }}</span>
+    </div>
+  } @else {
+    <div class="carte kpi">
+      <span class="petit-texte">Dossiers du mois</span>
+      <span class="valeur">{{ dossiersDuMois.length }}</span>
+    </div>
+  }
+  <div class="carte kpi">
+    <span class="petit-texte">Départs dans les 30 jours</span>
+    <span class="valeur">{{ voyagesProches.length }}</span>
+  </div>
+</div>
+
+<div class="grille grille-3 trois-questions">
+  <section class="carte">
+    <h2>Qui doit encore payer ?</h2>
+    <ul class="liste-simple">
+      @for (x of quiDoitPayer; track x.id) {
+        <li>
+          <a [routerLink]="['/dossiers', x.id]" class="lien-ligne">
+            <strong>{{ donnees.nomClient(x.clientId) }}</strong>
+            <span class="petit-texte">{{ donnees.libelleDossier(x) }}</span>
+          </a>
+          <span class="etiquette rouge">{{ fcfa(donnees.resteAPayer(x.id)) }}</span>
+        </li>
+      } @empty {
+        <li class="vide">Tous les dossiers sont soldés.</li>
+      }
+    </ul>
+  </section>
+
+  @if (session.role !== 'comptable') {
+    <section class="carte">
+      <h2>Quels papiers manquent ?</h2>
+      <ul class="liste-simple">
+        @for (p of papiersManquants; track p.id) {
+          <li>
+            <a [routerLink]="['/dossiers', p.dossierId]" class="lien-ligne">
+              <strong>{{ nomClientDossier(p.dossierId) }}</strong>
+              <span class="petit-texte">{{ libelleDossier(p.dossierId) }}</span>
+            </a>
+            <span class="etiquette orange">{{ p.nom }}</span>
+          </li>
+        } @empty {
+          <li class="vide">Aucune pièce manquante.</li>
+        }
+      </ul>
+    </section>
+  } @else {
+    <section class="carte">
+      <h2>Paiements récents</h2>
+      <ul class="liste-simple">
+        @for (p of paiementsRecents; track p.id) {
+          <li>
+            <a [routerLink]="['/recus', p.id]" class="lien-ligne">
+              <strong>{{ p.numeroRecu }} · {{ p.type }}</strong>
+              <span class="petit-texte">{{ libelleDossier(p.dossierId) }} · {{ dateFr(p.date) }}</span>
+            </a>
+            <span class="etiquette vert">{{ fcfa(p.montant) }}</span>
+          </li>
+        }
+      </ul>
+    </section>
+  }
+
+  <section class="carte">
+    <h2>Qui voyage bientôt ?</h2>
+    <ul class="liste-simple">
+      @for (x of voyagesProches; track x.id) {
+        <li>
+          <a [routerLink]="['/dossiers', x.id]" class="lien-ligne">
+            <strong>{{ donnees.nomClient(x.clientId) }}</strong>
+            <span class="petit-texte">{{ x.service }} · {{ x.ville }} · {{ dateFr(x.dateVoyage) }}</span>
+          </a>
+          <span class="etiquette" [class.orange]="joursRestants(x.dateVoyage) <= 7" [class.gris]="joursRestants(x.dateVoyage) > 7">
+            {{ delai(x.dateVoyage) }}
+          </span>
+        </li>
+      } @empty {
+        <li class="vide">Aucun départ dans les 30 jours.</li>
+      }
+    </ul>
+  </section>
+</div>
+
+<div class="grille" [class.grille-2]="session.role === 'directrice'">
+  @if (session.role !== 'comptable') {
+    <section class="carte">
+      <h2>Relances à faire</h2>
+      <div class="tableau">
+        <table>
+          <thead>
+            <tr><th>Date</th><th>Client / dossier</th><th>Action</th><th>Responsable</th><th>État</th></tr>
+          </thead>
+          <tbody>
+            @for (e of relances; track e.id) {
+              <tr>
+                <td>{{ dateFr(e.date) }}</td>
+                <td><a [routerLink]="['/dossiers', e.dossierId]">{{ nomClientDossier(e.dossierId) }} · {{ donnees.dossier(e.dossierId)?.numero }}</a></td>
+                <td>{{ e.action }}</td>
+                <td>{{ donnees.nomUtilisateur(e.responsableId) }}</td>
+                <td>
+                  <span class="etiquette" [class.rouge]="joursRestants(e.date) < 0" [class.orange]="joursRestants(e.date) === 0" [class.gris]="joursRestants(e.date) > 0">
+                    {{ joursRestants(e.date) < 0 ? 'En retard' : joursRestants(e.date) === 0 ? "Aujourd'hui" : 'À venir' }}
+                  </span>
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="5" class="vide">Aucune relance à faire.</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  } @else {
+    <section class="carte">
+      <h2>Reçus récents</h2>
+      <div class="tableau">
+        <table>
+          <thead>
+            <tr><th>Reçu</th><th>Dossier</th><th>Date</th><th>Moyen</th><th class="droite">Montant</th></tr>
+          </thead>
+          <tbody>
+            @for (p of paiementsRecents; track p.id) {
+              <tr>
+                <td><a [routerLink]="['/recus', p.id]">{{ p.numeroRecu }}</a></td>
+                <td>{{ libelleDossier(p.dossierId) }}</td>
+                <td>{{ dateFr(p.date) }}</td>
+                <td>{{ p.moyen }}</td>
+                <td class="droite fort">{{ fcfa(p.montant) }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
+
+  @if (session.role === 'directrice') {
+    <section class="carte">
+      <h2>Dossiers par étape</h2>
+      <div class="barres">
+        @for (e of repartitionEtapes; track e.libelle) {
+          <div class="barre-ligne">
+            <span class="libelle">{{ e.libelle }}</span>
+            <span class="piste"><span class="rempli" [style.width.%]="e.part"></span></span>
+            <span class="fort">{{ e.nombre }}</span>
+          </div>
+        }
+      </div>
+    </section>
+  }
+</div>

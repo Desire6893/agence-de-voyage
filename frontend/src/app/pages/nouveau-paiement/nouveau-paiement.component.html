@@ -1,0 +1,97 @@
+<div class="entete-page">
+  <div>
+    <h1>{{ session.role === 'agent' ? 'Enregistrer un acompte' : 'Enregistrer un paiement' }}</h1>
+    @if (dossier; as x) {
+      <p class="sous-titre">Dossier n° {{ x.numero }} – {{ x.service }} {{ x.pays }} · {{ donnees.nomClient(x.clientId) }}</p>
+    }
+  </div>
+</div>
+
+<form #f="ngForm" class="mise-en-page" (ngSubmit)="enregistrer(f)">
+  <section class="carte">
+    <h2>Détails du versement</h2>
+    <div class="formulaire">
+      @if (!id) {
+        <div class="champ plein">
+          <label for="dossier">Dossier *</label>
+          <select id="dossier" name="dossier" [(ngModel)]="dossierId" (ngModelChange)="choisirDossier()" required>
+            <option [ngValue]="0" disabled>Choisir un dossier</option>
+            @for (x of dossiers; track x.id) {
+              <option [ngValue]="x.id">{{ x.numero }} · {{ donnees.nomClient(x.clientId) }} · reste {{ fcfa(donnees.resteAPayer(x.id)) }}</option>
+            }
+          </select>
+        </div>
+      }
+
+      <div class="champ">
+        <label for="montant">Montant (FCFA) *</label>
+        <input id="montant" name="montant" type="number" min="1" step="1000" [(ngModel)]="montant" (ngModelChange)="confirmation = false" required #mo="ngModel" />
+        @if (mo.touched && (!montant || montant <= 0)) { <span class="erreur">Saisissez un montant supérieur à 0.</span> }
+        @if (montant && montant > 0) { <span class="petit-texte">{{ montantEnLettres(montant || 0) }}</span> }
+      </div>
+
+      <div class="champ">
+        <label for="date">Date de paiement *</label>
+        <input id="date" name="date" type="date" [(ngModel)]="date" required />
+      </div>
+
+      <div class="champ plein">
+        <label>Moyen de paiement</label>
+        <div class="choix">
+          @for (m of moyens; track m) {
+            <button type="button" [class.actif]="moyen === m" (click)="moyen = m">{{ m }}</button>
+          }
+        </div>
+      </div>
+
+      <div class="champ plein">
+        <label>Type de versement</label>
+        <div class="choix">
+          @for (t of types; track t) {
+            <button type="button" [class.actif]="type === t" (click)="type = t; confirmation = false">{{ t }}</button>
+          }
+        </div>
+      </div>
+    </div>
+
+    @for (a of avertissements; track a) {
+      <div class="message alerte avertissement">⚠ {{ a }} Vous pouvez enregistrer ce paiement.</div>
+    }
+
+    @if (confirmation) {
+      <div class="confirmation">
+        <p class="fort">Confirmer l'enregistrement malgré l'avertissement ?</p>
+        <div class="actions">
+          <button type="submit" class="bouton principal">Confirmer et enregistrer</button>
+          <button type="button" class="bouton" (click)="modifier()">Modifier le montant</button>
+        </div>
+      </div>
+    } @else {
+      <div class="actions pied">
+        <button type="submit" class="bouton principal" [disabled]="!dossier">Confirmer et enregistrer</button>
+        @if (dossier) {
+          <a [routerLink]="['/dossiers', dossier.id]" class="bouton">Annuler</a>
+        } @else {
+          <a routerLink="/paiements" class="bouton">Annuler</a>
+        }
+      </div>
+    }
+  </section>
+
+  <section class="carte situation">
+    <h2>Situation du dossier</h2>
+    @if (dossier; as x) {
+      <ul class="liste-simple">
+        <li><span>Montant total</span><strong>{{ fcfa(x.montantTotal) }}</strong></li>
+        <li><span>Déjà payé</span><strong>{{ fcfa(donnees.totalPaye(x.id)) }}</strong></li>
+        <li><span>Reste à payer</span><strong>{{ fcfa(reste) }}</strong></li>
+        <li class="apres"><span>Reste après ce versement</span><strong>{{ fcfa(resteApres) }}</strong></li>
+      </ul>
+      @if (decharge) {
+        <p class="etiquette or info">Décharge de visa générée (2 exemplaires)</p>
+      }
+    } @else {
+      <p class="vide">Choisissez un dossier.</p>
+    }
+  </section>
+</form>

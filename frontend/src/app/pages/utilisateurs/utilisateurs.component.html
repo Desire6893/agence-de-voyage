@@ -1,0 +1,56 @@
+<div class="entete-page">
+  <div>
+    <h1>Utilisateurs et droits</h1>
+    <p class="sous-titre">Les comptes de l'équipe. Les clients n'ont pas de compte.</p>
+  </div>
+  <a routerLink="/utilisateurs/nouveau" class="bouton principal">+ Nouveau compte</a>
+</div>
+
+@if (message) { <div class="message succes">{{ message }}</div> }
+@if (info) { <div class="message succes">{{ info }}</div> }
+
+<section class="carte bloc">
+  <h2>Comptes de l'équipe</h2>
+  <div class="tableau">
+    <table>
+      <thead><tr><th>Nom</th><th>Identifiant</th><th>Rôle</th><th>État</th><th class="droite">Actions</th></tr></thead>
+      <tbody>
+        @for (u of utilisateurs; track u.id) {
+          <tr>
+            <td class="fort">{{ u.nom }}</td>
+            <td>{{ u.identifiant }}</td>
+            <td>{{ roles[u.role] }}</td>
+            <td><span class="etiquette" [class.vert]="u.etat === 'actif'" [class.gris]="u.etat === 'inactif'">{{ u.etat === 'actif' ? 'Actif' : 'Inactif' }}</span></td>
+            <td class="droite">
+              <div class="actions fin">
+                <button type="button" class="bouton petit" (click)="reinitialiser(u)">Réinitialiser le mot de passe</button>
+                @if (u.id !== session.id) {
+                  <button type="button" class="bouton petit" (click)="basculer(u)">{{ u.etat === 'actif' ? 'Désactiver' : 'Activer' }}</button>
+                }
+              </div>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="carte">
+  <h2>Qui peut faire quoi</h2>
+  <div class="tableau">
+    <table>
+      <thead><tr><th>Fonction</th><th>Directrice</th><th>Agent</th><th>Comptable</th></tr></thead>
+      <tbody>
+        @for (l of droits; track l.fonction) {
+          <tr>
+            <td>{{ l.fonction }}</td>
+            <td>{{ l.d }}</td>
+            <td>{{ l.a }}</td>
+            <td>{{ l.c }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
